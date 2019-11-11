@@ -18,5 +18,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('users.urls')),  # 添加 class_15 的url配置
+    path('api/auth/', include('users.urls')),  #
+
+    # 视频接口
+    path('api/', include('video.urls', )),  # http://127.0.0.1:8000/api/video
 ]

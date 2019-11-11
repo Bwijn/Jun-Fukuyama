@@ -154,7 +154,7 @@ AUTH_USER_MODEL = 'users.User'
 
 # 配置 API 框架
 REST_FRAMEWORK = {
-
+    "PAGE_SIZE": 2  # 每页显示多少个
 }
 
 CORS_ALLOW_HEADERS = (
