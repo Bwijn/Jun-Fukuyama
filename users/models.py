@@ -32,6 +32,7 @@ class User(AbstractUser, ):
 class UserProfile(models.Model):
     avatar = models.CharField(max_length=255, null=True)
     user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
+    nickname = models.CharField(max_length=200, null=False)
 
     class Meta:
         db_table = 'user_profile'
