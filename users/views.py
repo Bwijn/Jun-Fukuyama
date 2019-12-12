@@ -1,74 +1,60 @@
-from django.contrib.auth import login
-from django.contrib.auth import authenticate
-from django.db import DatabaseError
-from django.http import HttpResponse, JsonResponse
-from rest_framework.views import APIView
+from django.db.models import Q
+from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
+from rest_framework import viewsets, status
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.response import Response
+from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler
+from django.http import JsonResponse
 
-from users.models import User
+from .serializers import UserRegSerializer
 
-
-# http://localhost:8000/api/auth/login
-class Login(APIView):
-
-    def post(self, request):
-        print(request.headers)
-        formdata = request.data
-        # 获取用户名和密码
-        username = formdata.get('username')
-        password = formdata.get('password')
-        # 认证user对象
-        user = authenticate(username=username, password=password)
-        if user:
-            login(request, user)
-            request.session.set_expiry(120)
-            avatar = user.userprofile.avatar
-
-            # 将session哈希值传入返回
-            session = request.session.get('_auth_user_hash')
-            # print(request.session.items())
-            ret = {
-                'userSession': session,
-                'userName': username,
-                'avatar': avatar
-            }
-            return JsonResponse(ret, status=201)
-
-        return JsonResponse({'error': "user", 'detail': '账号或密码错误'}, status=400)
+User = get_user_model()  # 从settings里面去找用户认证模型类 Django.contrib.auth里自带的方法
 
 
-class Register(APIView):
-    # def get(self, request):
-    #     return JsonResponse({'code': 1})
+class CustomBackend(ModelBackend):
+    """
+    自定义用户验证
+    """
 
-    # 新建用户 POST
-    def post(self, request):
-        # 获取用户名和密码 邮箱
-        username, password = (request.data.get('username'), request.data.get("password"))
-        email = request.data.get("email")
-        print(username, password, email)
+    # todo BUG解决 加request  官方文档 https://docs.djangoproject.com/en/1.11/topics/auth/customizing/
+    # todo 博客地址 http://www.pythonheidong.com/blog/article/157431/
 
-        # 判断填写是否正确
-        if not all([username, password, email]):
-            # 400 Bad Request：服务器不理解客户端的请求，未做任何处理。
-            return JsonResponse(
-                {
-                    "error": "Invalid payload.",
-                    "detail": {
-                        "param": "missing parameters."
-                    }
-                },
-                status=400)
-
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        print("认证+++++++++++++++++++++++++++++++", request, kwargs)
         try:
-            user = User.objects.create_user(username=username, email=email, password=password, )
-            user.save()
-        except DatabaseError:
-            return JsonResponse(
-                {
-                    "error": "DatabaseError",
-                    "detail": {
-                        "username": "Duplicate Name"
-                    }
-                },
-                status=500)
-        return JsonResponse({"code": 000, "MSG": "成功"}, status=201)
+            # 用户名和邮箱都能登录
+            user = User.objects.get(
+                Q(username=username) | Q(email=username)
+            )
+            print("-----------------------------------", user)
+            if user.check_password(password):
+                return user
+        except Exception as e:
+            return None
+
+
+# http://127.0.0.1:8000/api/user/register
+# 用户注册 继承create视图集
+class UserViewset(CreateModelMixin, viewsets.GenericViewSet):
+    """
+      用户
+    """
+    serializer_class = UserRegSerializer
+    queryset = User.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+        re_dict = serializer.data
+        payload = jwt_payload_handler(user)
+        re_dict["token"] = jwt_encode_handler(payload)
+        re_dict["name"] = user.username
+
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        return serializer.save()

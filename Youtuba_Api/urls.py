@@ -1,25 +1,45 @@
-"""Youtuba_Api URL Configuration
+"""
+Raqo URL配置
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+urlpatterns列表将URL路由到视图。有关更多信息，请参见：
+    https://docs.djangoproject.com/zh-CN/2.2/topics/http/urls/
+例子：
+功能视图
+    1.添加导入：从my_app导入视图
+    2.将URL添加到urlpatterns：path（''，views.home，name ='home'）
+基于类的视图
+    1.添加一个导入：from other_app.views import Home
+    2.将URL添加到urlpatterns：path（''，Home.as_view（），name ='home'）
+包括另一个URLconf
+    1.导入include（）函数：从django.urls导入include，路径
+    2.将URL添加到urlpatterns：path（'blog /'，include（'blog.urls'））
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from rest_framework.documentation import include_docs_urls
+from rest_framework import routers
+
+from rest_framework.authtoken import views
+
+# 注册路由器
+from rest_framework_jwt.views import obtain_jwt_token
+from users.views import UserViewset
+
+router = routers.SimpleRouter()
+router.register(r'api/user', UserViewset, base_name='user')
 
 urlpatterns = [
+    # 管理员
     path('admin/', admin.site.urls),
-    path('api/auth/', include('users.urls')),  #
+    # 文档
+    # path('api/docs/', include_docs_urls(title='套你猴子')),
 
-    # 视频接口
-    path('api/', include('video.urls', )),  # http://127.0.0.1:8000/api/video
+    # drf 路由器自动生成url 包括 用户注册
+    # 自动生成的路由在上面router.register里面注册
+    path('', include(router.urls)),
+
+    # user token 登录 令牌
+    # http://127.0.0.1:8000/api-token-auth
+    path('api-token-auth', obtain_jwt_token),
+
 ]
