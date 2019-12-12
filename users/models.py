@@ -17,6 +17,6 @@ class User(AbstractUser):
 
     # 暂时重写创建user 管理员与员工身份字段暂无
     # objects = ResetUserManager()
-    class Meta:
-        db_table = "auth_user"
+    # class Meta:
+    #     db_table = "u"
 
