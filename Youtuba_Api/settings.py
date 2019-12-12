@@ -76,12 +76,12 @@ WSGI_APPLICATION = 'Youtuba_Api.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
-        'NAME': 'fff',  # 你要存储数据的库名，事先要创建之
-        'USER': 'root',  # 数据库用户名
-        'PASSWORD': '',  # 密码
-        'HOST': 'localhost',  # 主机
-        'PORT': '3306',  # 数据库使用的端口
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'wei',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': '127.0.0.1',
+        'PORT': 5432
     }
 }
 
@@ -133,9 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
-
-LANGUAGE_CODE = 'zh-Hans'
-
+LANGUAGE_CODE = 'zh-hans'
 TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
