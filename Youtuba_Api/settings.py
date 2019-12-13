@@ -85,34 +85,6 @@ DATABASES = {
     }
 }
 
-# CACHES = {
-#     "default": {  # 默认
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379/0",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     },
-#     "session": {  # session
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379/1",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     },
-#     "token": {  # session
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379/2",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     },
-# }
-
-# session配置
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "session"
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -149,10 +121,17 @@ STATIC_URL = '/static/'
 
 # 使用自定义User验证类
 AUTH_USER_MODEL = 'users.User'
+# 自定义认证类
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
 
 # 配置 API 框架
 REST_FRAMEWORK = {
     # "PAGE_SIZE": 2  # 每页显示多少个
+    # 'DEFAULT_RENDERER_CLASSES': (
+    #     'rest_framework.renderers.JSONRenderer',
+    # ),
 }
 
 CORS_ALLOW_HEADERS = (
@@ -178,3 +157,7 @@ CORS_ALLOW_CREDENTIALS = True
 # )
 ALLOWED_HOSTS = []
 CORS_ORIGIN_ALLOW_ALL = True
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',  # response中token的payload部分处理函数
+}

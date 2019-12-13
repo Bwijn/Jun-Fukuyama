@@ -6,7 +6,7 @@ from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
 from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler
 from django.http import JsonResponse
-
+from rest_framework import serializers
 from .serializers import UserRegSerializer
 
 User = get_user_model()  # 从settings里面去找用户认证模型类 Django.contrib.auth里自带的方法
@@ -31,6 +31,16 @@ class CustomBackend(ModelBackend):
             if user.check_password(password):
                 return user
         except Exception as e:
+            print(e.args[0], e)
+            # 异常信息UserProfile matching query does not exist
+            raise serializers.ValidationError({'username_error_field': 'username mismatch'})
+            return None
+
+        else:
+            # 上面的还没返回结束的话这里就执行了
+            # 这里匹配用户密码错误
+            raise serializers.ValidationError({'password_error_field': "password_Incorrect", "error_code": "0001"})
+            # return JsonResponse({"aaa": 1})
             return None
 
 
@@ -58,3 +68,4 @@ class UserViewset(CreateModelMixin, viewsets.GenericViewSet):
 
     def perform_create(self, serializer):
         return serializer.save()
+
