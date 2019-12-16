@@ -24,11 +24,13 @@ from rest_framework.authtoken import views
 # 注册路由器
 from rest_framework_jwt.views import obtain_jwt_token
 from users.views import UserViewset
-from video.views import VideoBanner
+from video.views import VideoBanner, VideoView, VideoDetail
 
 router = routers.SimpleRouter()
 router.register(r'api/user', UserViewset, base_name='user')
 router.register("api/banner", VideoBanner, )  # 首页轮播图
+router.register("api/homerecommend", VideoView)  # 首页推荐
+router.register("api/video", VideoDetail)  # 视频详情
 
 urlpatterns = [
     # 管理员

@@ -6,6 +6,14 @@ from django.db import models
 from users.models import User
 
 
+# 番名
+class VideoName(models.Model):
+    title = models.CharField(max_length=200, blank=True, null=True)
+
+    class Meta:
+        db_table = "AnimeName"
+
+
 # 视频分类
 class Classification(models.Model):
     title = models.CharField(max_length=100, blank=True, null=True)
@@ -18,17 +26,19 @@ class Classification(models.Model):
         db_table = "v_classification"
 
 
-# 视频信息表
+# 视频详情
 class Video(models.Model):
     # 一对多 User 对 Video
     url = models.CharField(max_length=500)  # 视频地址
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # 作者
     cover = models.CharField(max_length=500)  # 封面
     pub_date = models.DateTimeField(auto_now_add=True)  # 发布日期
-    brief = models.TextField(default=None)  # 视频简介
+    brief = models.TextField(default=None,null=True)  # 视频简介
     title = models.CharField(max_length=500)  # 视频标题
     view_count = models.IntegerField(default=0)  # 观看次数
     classification = models.ForeignKey(Classification, on_delete=models.CASCADE, null=True)  # 分类
+    episode = models.PositiveIntegerField(null=True)  # 集数
+    animename = models.CharField(max_length=200, null=True)  # 番名
 
     class Meta:
         db_table = 'video'
