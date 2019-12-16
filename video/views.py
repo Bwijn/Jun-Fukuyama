@@ -4,11 +4,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import serializers, fields
 from rest_framework.mixins import ListModelMixin
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
 from video.models import Video
 
+from .models import Banner
 
 # 视频表 序列化对象
+from .serializers import VideoBannerSerializers
+
+
 class VideoInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
@@ -49,6 +53,7 @@ class VideoView(APIView):
         return Response(ser.data)
 
 
+# 首页的轮播图API
 class Video_detail(APIView):
     def get(self, request, *args, **kwargs):
         # 根据视频主键取值
@@ -62,3 +67,9 @@ class Video_detail(APIView):
         video_serializer = VideoInfoSerializer(instance=video, many=False, )
         # 返回序列化后的数据
         return Response(video_serializer.data)
+
+
+# 首页轮播图
+class VideoBanner(ReadOnlyModelViewSet):
+    queryset = Banner.objects.all()
+    serializer_class = VideoBannerSerializers
