@@ -128,9 +128,9 @@ AUTHENTICATION_BACKENDS = (
 
 # 配置 API 框架
 REST_FRAMEWORK = {
-    # "PAGE_SIZE": 2  # 每页显示多少个
+    "PAGE_SIZE": 2,  # 每页显示多少个
     # 'DEFAULT_RENDERER_CLASSES': (
-    #     'rest_framework.renderers.JSONRenderer',
+    # 'rest_framework.renderers.JSONRenderer',
     # ),
 }
 

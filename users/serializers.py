@@ -25,4 +25,14 @@ class UserRegSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = "__all__"
+        exclude = ('password', 'last_login', 'first_name')
+
+
+# 返回视频详情时author序列化类 去除不需要的字段 需要在这里额外显式的设置一个序列化类
+# https://github.com/encode/django-rest-framework/issues/1984#issuecomment-60267220
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = (
+            'password', 'last_login', 'is_superuser', 'first_name', 'last_name', 'is_staff', 'is_active', 'date_joined',
+            'groups', 'user_permissions')

@@ -68,4 +68,3 @@ class UserViewset(CreateModelMixin, viewsets.GenericViewSet):
 
     def perform_create(self, serializer):
         return serializer.save()
-
