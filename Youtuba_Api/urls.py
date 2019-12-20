@@ -23,14 +23,16 @@ from rest_framework.authtoken import views
 
 # 注册路由器
 from rest_framework_jwt.views import obtain_jwt_token
-from users.views import UserViewset
-from video.views import VideoBanner, VideoView, VideoDetail, Favorite
+from users.views import UserViewset, ULike
+from video.views import VideoBanner, VideoView, VideoDetail
 
 router = routers.DefaultRouter()
 router.register('api/user', UserViewset, base_name='user')  # 只能post创建新用户
 router.register("api/homerecommend", VideoView)  # 首页推荐List     http://127.0.0.1:8000/api/homerecommend/
 router.register("api/video", VideoDetail)  # 视频详情               http://127.0.0.1:8000/api/video/3
-router.register("api/like", Favorite)  # 视频详情               http://127.0.0.1:8000/api/like/
+router.register("api/ulike", ULike)  # 视频详情               http://127.0.0.1:8000/api/ulike
+
+# router.register("api/like", Favorite)  # 视频详情               http://127.0.0.1:8000/api/like/
 # router.register("api/banner", VideoBanner, )  # 首页轮播图
 
 urlpatterns = [

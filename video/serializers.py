@@ -20,20 +20,6 @@ class VideoSerializers(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# 视频详情
-class VideoInfoSerializer(serializers.ModelSerializer):
-    # 作者头像地址
-    author_avatar = serializers.CharField(source="author.avatar", read_only=True)
-    author = UserSerializer(read_only=True)
-    # 点赞数量
-    # like = serializers.PrimaryKeyRelatedField(queryset=LikeShip.objects.all())
-
-    class Meta:
-        model = Video
-        depth = 1
-        exclude = ( 'pub_date',)
-
-
 # 视频点赞 中间表的序列化器
 class VideoFavorite(serializers.ModelSerializer):
     video = serializers.PrimaryKeyRelatedField(
@@ -45,3 +31,15 @@ class VideoFavorite(serializers.ModelSerializer):
         model = LikeShip
         read_only_fields = ('id',)
         fields = "__all__"
+
+
+# 视频详情
+class VideoInfoSerializer(serializers.ModelSerializer):
+    # 作者头像地址
+    author_avatar = serializers.CharField(source="author.avatar", read_only=True)
+    author = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Video
+        depth = 1
+        exclude = ('pub_date',)

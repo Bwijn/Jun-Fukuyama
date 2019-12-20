@@ -29,17 +29,16 @@ class Classification(models.Model):
 # 视频详情
 class Video(models.Model):
     # 一对多 User 对 Video
-    url = models.CharField(max_length=500, null=True)  # 视频地址
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # 作者
-    cover = models.CharField(max_length=500, null=True)  # 封面
-    pub_date = models.DateTimeField(auto_now_add=True, null=True)  # 发布日期
-    brief = models.TextField(default=None, null=True)  # 视频简介
-    title = models.CharField(max_length=500, null=True)  # 视频标题
-    view_count = models.IntegerField(default=0)  # 观看次数
-    classification = models.ForeignKey(Classification, on_delete=models.CASCADE, null=True)  # 分类
-    episode = models.PositiveIntegerField(null=True)  # 集数
-    animename = models.CharField(max_length=200, null=True)  # 番名 todo 改外键
-    like = models.ManyToManyField(to=User, default=0, related_name='ssssss', verbose_name='点赞数', null=True)  # 点赞数量
+    url = models.CharField(max_length=500, null=True, blank=True)  # 视频地址
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  # 作者
+    cover = models.CharField(max_length=500, null=True, blank=True)  # 封面
+    pub_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)  # 发布日期
+    brief = models.TextField(default=None, null=True, blank=True)  # 视频简介
+    title = models.CharField(max_length=500, null=True, blank=True)  # 视频标题
+    view_count = models.IntegerField(default=0, blank=True)  # 观看次数
+    classification = models.ForeignKey(Classification, blank=True, on_delete=models.CASCADE, null=True)  # 分类
+    episode = models.PositiveIntegerField(null=True, blank=True)  # 集数
+    animename = models.CharField(max_length=200, null=True, blank=True)  # 番名 todo 改外键
 
     class Meta:
         db_table = 'video'
@@ -58,8 +57,13 @@ class Banner(models.Model):
         verbose_name_plural = verbose_name
 
 
+# 移到user app
 # 视频点赞中间表
 class LikeShip(models.Model):
-    video_instance = models.ForeignKey(Video, on_delete=models.DO_NOTHING)
-    user_instance = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    video = models.ForeignKey(Video, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
 
+    # def __str__(self):
+    #     return "hhhhh"
+    # def get_likenum(self):
+    #     return
