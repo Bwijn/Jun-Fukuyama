@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -129,9 +130,14 @@ AUTHENTICATION_BACKENDS = (
 # 配置 API 框架
 REST_FRAMEWORK = {
     "PAGE_SIZE": 2,  # 每页显示多少个
-    # 'DEFAULT_RENDERER_CLASSES': (
-    # 'rest_framework.renderers.JSONRenderer',
-    # ),
+    # 认证
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    # 验证类
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
 
     # 异常处理
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler'
@@ -161,6 +167,14 @@ CORS_ALLOW_CREDENTIALS = True
 ALLOWED_HOSTS = []
 CORS_ORIGIN_ALLOW_ALL = True
 
+import datetime
+
 JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',  # response中token的payload部分处理函数
+    # 'JWT_DECODE_HANDLER': 'rest_framework_jwt.utils.jwt_decode_handler',  # 解密token的方法 这里定义
+    # Token失效时间
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+
+    # 不过期
+    'JWT_VERIFY_EXPIRATION': False,
 }

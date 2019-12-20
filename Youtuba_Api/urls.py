@@ -19,7 +19,7 @@ from django.urls import path, include, re_path
 
 # 注册路由器
 from rest_framework.routers import Route, SimpleRouter
-from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 from users.views import UserViewset
 from video.views import VideoBanner, VideoView, VideoDetail
 
@@ -38,5 +38,6 @@ urlpatterns = [
     # user token 登录 令牌
     # http://127.0.0.1:8000/api-token-auth
     path('api-token-auth', obtain_jwt_token),
+    path(r'^api-token-verify/', verify_jwt_token),
 
 ]

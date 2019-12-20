@@ -1,13 +1,16 @@
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.generics import CreateAPIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import serializers, fields, status
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
+from rest_framework_jwt.utils import jwt_decode_handler
+
 from video.models import Video
 from rest_framework.response import Response
 
@@ -28,6 +31,7 @@ class VideoView(ReadOnlyModelViewSet):
 class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
     queryset = Video.objects.all()
     serializer_class = VideoInfoSerializer
+    permission_classes = [IsAdminUser]
 
     # 在这里返回的serialzers.data字典里面添加上点赞数
     def retrieve(self, request, pk=None, *args, **kwargs):
@@ -55,9 +59,17 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
     @action(methods=['post'], detail=True, )
     def likeaction(self, request, pk=None, *args, **kwargs):
         print(pk)
+        print(request.auth)
 
         vo = Video.objects.get(id=pk)
-        request.user.like_r.add(vo)
+        print(jwt_decode_handler(
+            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImJ3aWpuNSIsImV4cCI6MTU3NjgwMzcwMywiZW1haWwiOiI3Nzk4MDUxMjZAcXEuY29tIn0.4-fgOeZCZOyZDScPNtxgy5_Gxa3AKuT4p_rjcQDEl8s'))
+        try:
+            # 没有登录会 报错匿名用户没有相关属性
+            request.user.like_r.add(vo)
+        except Exception as e:
+            # 此异常会导致 HTTP 状态码 "403 Forbidden" 的响应
+            raise PermissionDenied(detail="请登录！！！！！！！！！！")
         return Response(data="IIIIIIOP", status=status.HTTP_201_CREATED)
 
 
