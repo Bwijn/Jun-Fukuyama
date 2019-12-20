@@ -16,31 +16,21 @@ urlpatterns列表将URL路由到视图。有关更多信息，请参见：
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from rest_framework.documentation import include_docs_urls
-from rest_framework import routers
-
-from rest_framework.authtoken import views
 
 # 注册路由器
+from rest_framework.routers import Route, SimpleRouter
 from rest_framework_jwt.views import obtain_jwt_token
-from users.views import UserViewset, ULike
+from users.views import UserViewset
 from video.views import VideoBanner, VideoView, VideoDetail
 
-router = routers.DefaultRouter()
+router = SimpleRouter()
 router.register('api/user', UserViewset, base_name='user')  # 只能post创建新用户
 router.register("api/homerecommend", VideoView)  # 首页推荐List     http://127.0.0.1:8000/api/homerecommend/
 router.register("api/video", VideoDetail)  # 视频详情               http://127.0.0.1:8000/api/video/3
-router.register("api/ulike", ULike)  # 视频详情               http://127.0.0.1:8000/api/ulike
-
-# router.register("api/like", Favorite)  # 视频详情               http://127.0.0.1:8000/api/like/
-# router.register("api/banner", VideoBanner, )  # 首页轮播图
 
 urlpatterns = [
     # 管理员
     path('admin/', admin.site.urls),
-    # 文档
-    # path('api/docs/', include_docs_urls(title='套你猴子')),
-
     # drf 路由器自动生成url 包括 用户注册
     # 自动生成的路由在上面router.register里面注册
     path('', include(router.urls)),

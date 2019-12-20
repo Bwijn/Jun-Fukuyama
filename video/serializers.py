@@ -3,7 +3,7 @@ from django.utils.timezone import now
 
 from users.models import User
 from users.serializers import UserSerializer
-from video.models import Banner, Video, LikeShip
+from video.models import Banner, Video
 
 
 # 轮播图
@@ -17,19 +17,6 @@ class VideoBannerSerializers(serializers.ModelSerializer):
 class VideoSerializers(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = "__all__"
-
-
-# 视频点赞 中间表的序列化器
-class VideoFavorite(serializers.ModelSerializer):
-    video = serializers.PrimaryKeyRelatedField(
-        queryset=Video.objects.all())
-    Viewer = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all())
-
-    class Meta:
-        model = LikeShip
-        read_only_fields = ('id',)
         fields = "__all__"
 
 

@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from video.models import LikeShip
 
 User = get_user_model()
 
@@ -39,11 +38,3 @@ class UserSerializer(serializers.ModelSerializer):
             'password', 'last_login', 'is_superuser', 'first_name', 'last_name', 'is_staff', 'is_active', 'date_joined',
             'groups', 'user_permissions')
 
-
-class ULikeSerializer(serializers.ModelSerializer):
-    # todo 添加点赞数量
-    likenum = serializers.IntegerField(source="video.id", read_only=True)
-
-    class Meta:
-        model = LikeShip
-        fields = "__all__"

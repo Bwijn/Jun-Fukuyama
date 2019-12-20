@@ -132,6 +132,9 @@ REST_FRAMEWORK = {
     # 'DEFAULT_RENDERER_CLASSES': (
     # 'rest_framework.renderers.JSONRenderer',
     # ),
+
+    # 异常处理
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler'
 }
 
 CORS_ALLOW_HEADERS = (

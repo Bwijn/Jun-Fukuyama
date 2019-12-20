@@ -2,8 +2,8 @@ from datetime import datetime
 
 from django.db import models
 
+
 # Create your models here.
-from users.models import User
 
 
 # 番名
@@ -30,7 +30,7 @@ class Classification(models.Model):
 class Video(models.Model):
     # 一对多 User 对 Video
     url = models.CharField(max_length=500, null=True, blank=True)  # 视频地址
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  # 作者
+    author = models.ForeignKey(to='users.User', on_delete=models.SET_NULL, null=True, blank=True)  # 作者
     cover = models.CharField(max_length=500, null=True, blank=True)  # 封面
     pub_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)  # 发布日期
     brief = models.TextField(default=None, null=True, blank=True)  # 视频简介
@@ -55,15 +55,3 @@ class Banner(models.Model):
     class Meta:
         verbose_name = u"轮播图"
         verbose_name_plural = verbose_name
-
-
-# 移到user app
-# 视频点赞中间表
-class LikeShip(models.Model):
-    video = models.ForeignKey(Video, on_delete=models.DO_NOTHING)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-
-    # def __str__(self):
-    #     return "hhhhh"
-    # def get_likenum(self):
-    #     return

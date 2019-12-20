@@ -3,16 +3,18 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from rest_framework import viewsets, status
 from rest_framework.exceptions import ValidationError
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.generics import get_object_or_404
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler
 from django.http import JsonResponse
 from rest_framework import serializers
 from django.http import HttpResponse, JsonResponse
+from rest_framework.decorators import action
 
-from video.models import LikeShip, Video
-from .serializers import UserRegSerializer, ULikeSerializer
+from video.models import Video
+from .serializers import UserRegSerializer
 
 User = get_user_model()  # 从settings里面去找用户认证模型类 Django.contrib.auth里自带的方法
 
@@ -73,36 +75,3 @@ class UserViewset(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, viewse
 
     def perform_create(self, serializer):
         return serializer.save()
-
-
-# 用户点赞
-# http://127.0.0.1:8000/api/ulike/
-class ULike(ModelViewSet):
-    """
-      用户点赞
-    """
-    # todo 只有该用户才能操作该用户的点赞 判断
-    serializer_class = ULikeSerializer
-    queryset = LikeShip.objects.all()
-
-    # def create(self, request, *args, **kwargs):
-    #     print(args, kwargs)
-    #     return Response(data="FFFF")
-
-    # 重写方法防止重复点赞
-    def perform_create(self, serializer):
-        # VPK = self.request.kwargs.get()
-        Vid, Uid = self.request.data['video'], self.request.data['user']
-        VInstance = Video.objects.get(id=Vid)
-        print('视频', VInstance)
-        print(Vid, Uid)
-        print(serializer.data,serializer)
-
-        # 查询点赞记录是否存在
-        queryset = LikeShip.objects.filter(user=Uid, video=Vid)
-        print(queryset)
-        if queryset.exists():
-            raise ValidationError({"err": "禁止重复点赞"})
-
-        # 验证都通过 保存点赞记录
-        serializer.save()
