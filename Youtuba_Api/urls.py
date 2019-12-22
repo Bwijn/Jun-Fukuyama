@@ -24,7 +24,7 @@ from users.views import UserViewset
 from video.views import VideoBanner, VideoView, VideoDetail
 
 router = SimpleRouter()
-router.register('api/user', UserViewset, base_name='user')  # 只能post创建新用户
+router.register('api/user', UserViewset,)  # 只能post创建新用户
 router.register("api/homerecommend", VideoView)  # 首页推荐List     http://127.0.0.1:8000/api/homerecommend/
 router.register("api/video", VideoDetail)  # 视频详情               http://127.0.0.1:8000/api/video/3
 # http://127.0.0.1:8000/api/video/5/likeaction/
