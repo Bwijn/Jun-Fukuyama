@@ -136,7 +136,7 @@ REST_FRAMEWORK = {
     ),
     # 验证类
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # 将request.user赋值为 token解密后的对象 原本默认是匿名用户
     ),
 
     # 异常处理

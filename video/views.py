@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.exceptions import NotFound, PermissionDenied, NotAuthenticated, ValidationError
 from rest_framework.generics import CreateAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -22,6 +22,7 @@ from .serializers import VideoBannerSerializers, VideoSerializers, VideoInfoSeri
 
 # 首页推荐列表
 class VideoView(ReadOnlyModelViewSet):
+    permission_classes = []
     queryset = Video.objects.all()
     serializer_class = VideoSerializers
     pagination_class = PageNumberPagination
@@ -35,7 +36,7 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
 
     # 在这里返回的serialzers.data字典里面添加上点赞数
     def retrieve(self, request, pk=None, *args, **kwargs):
-        # todo 加上异常 http://www.iamnancy.top/djangorestframework/Exceptions/#notfound
+        # request.user 对象已经被jwt 认证类给赋值了
 
         try:
             # 返回查询到的视频
@@ -44,6 +45,9 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
             raise NotFound(detail="video resources notfound")
         serializer = self.get_serializer(instance)
 
+        # 当前用户查询是否点赞
+        is_like = instance.viewer.filter(id=request.user.id)
+
         # 查询点赞数量
         likenum = instance.viewer.count()
 
@@ -51,26 +55,32 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
         dic = serializer.data
         dic['likenum'] = likenum
 
-        # print(request.query_params, request.user.nickname, request.method, args, kwargs.get('pk'))
-        print(dic)
+        # 如果查询到 说明已经点赞了 给前端返回过去
+        if is_like:
+            dic['is_liked'] = 1
+        else:
+            dic['is_liked'] = 0
+
         return Response(dic, status=status.HTTP_200_OK)
 
     # 给视频点赞
     @action(methods=['post'], detail=True, )
     def likeaction(self, request, pk=None, *args, **kwargs):
-        print(pk)
-        print(request.auth)
+        instance = request.user.like_r.filter(id=pk)  # 多对多查询 视频id等于pk
+        print(instance)
+        if instance:
+            # 如果点过赞就不向下执行了 直接返回错误信息
+            raise ValidationError("You already liked")
 
-        vo = Video.objects.get(id=pk)
-        print(jwt_decode_handler(
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImJ3aWpuNSIsImV4cCI6MTU3NjgwMzcwMywiZW1haWwiOiI3Nzk4MDUxMjZAcXEuY29tIn0.4-fgOeZCZOyZDScPNtxgy5_Gxa3AKuT4p_rjcQDEl8s'))
         try:
-            # 没有登录会 报错匿名用户没有相关属性
+            # 返回查询到的视频
+            vo = Video.objects.get(id=pk)
             request.user.like_r.add(vo)
-        except Exception as e:
-            # 此异常会导致 HTTP 状态码 "403 Forbidden" 的响应
-            raise PermissionDenied(detail="请登录！！！！！！！！！！")
-        return Response(data="IIIIIIOP", status=status.HTTP_201_CREATED)
+            request.user.like_r.add(vo)
+        except Exception:
+            raise NotAuthenticated("video resources notfound")
+
+        return Response(data={"msg": "action success"}, status=status.HTTP_201_CREATED)
 
 
 # 首页轮播图
