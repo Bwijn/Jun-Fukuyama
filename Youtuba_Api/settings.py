@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'Youtuba_Api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'raqo',
-        'USER': 'admin',
-        'PASSWORD': '123456',
-        'HOST': '122.51.25.188:8888',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
         'PORT': 5432
     }
 }
@@ -118,11 +118,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = './static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
 
 # 使用自定义User验证类
 AUTH_USER_MODEL = 'users.User'
@@ -182,3 +177,14 @@ JWT_AUTH = {
     # 不过期
     'JWT_VERIFY_EXPIRATION': False,
 }
+
+
+##---------------------------------静态文件
+STATIC_URL = '/static/'
+STATIC_ROOT = './static/' 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),  # 实际名，即实际文件夹的名字
+]
+
+
+
