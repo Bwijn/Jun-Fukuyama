@@ -9,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '^3%xy)$_tygx^7w%66vv075#f9p^fk4o_$wdp1jjalrroe1#2s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -67,7 +67,7 @@ DATABASES = {
         'NAME': 'raqo',
         'USER': 'admin',
         'PASSWORD': '123456',
-        'HOST': 'localhost',
+        'HOST': '122.51.25.188',
         'PORT': 5432
     }
 }
