@@ -67,7 +67,7 @@ DATABASES = {
         'NAME': 'raqo',
         'USER': 'admin',
         'PASSWORD': '123456',
-        'HOST': '122.51.25.188',
+        'HOST': 'localhost',
         'PORT': 5432
     }
 }
@@ -104,12 +104,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-# 静态资源配置- - - - - - - - - - - - - - - - - - - - - - 
-STATIC_URL = '/static/'
-STATIC_ROOT = './static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
 
 
 
@@ -177,7 +171,7 @@ JWT_AUTH = {
 STATIC_URL = '/static/'
 STATIC_ROOT = './static/' 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),  # 实际名，即实际文件夹的名字
+    os.path.join(BASE_DIR, "/static/"),  # 实际名，即实际文件夹的名字
 ]
 
 
