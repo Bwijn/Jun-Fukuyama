@@ -67,7 +67,7 @@ DATABASES = {
         'NAME': 'raqo',
         'USER': 'admin',
         'PASSWORD': '123456',
-        'HOST': '122.51.25.188',
+        'HOST': 'localhost',
         'PORT': 5432
     }
 }
