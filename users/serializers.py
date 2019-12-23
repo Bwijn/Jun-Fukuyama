@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-
 User = get_user_model()
 
 
@@ -19,14 +18,16 @@ class UserRegSerializer(serializers.ModelSerializer):
     # 密码加密保存 重写create方法
     def create(self, validated_data):
         user = super(UserRegSerializer, self).create(validated_data=validated_data)
-        print(user.is_active)
         user.set_password(validated_data["password"])
+        # print(validated_data)
+        # print(validated_data['password'])
         user.save()
         return user
+        # return
 
     class Meta:
         model = User
-        exclude = ('password', 'last_login', 'first_name')
+        exclude = ('last_login', 'first_name')
 
 
 # 返回视频详情时author序列化类 去除不需要的字段 需要在这里额外显式的设置一个序列化类
@@ -37,4 +38,3 @@ class UserSerializer(serializers.ModelSerializer):
         exclude = (
             'password', 'last_login', 'is_superuser', 'first_name', 'last_name', 'is_staff', 'is_active', 'date_joined',
             'groups', 'user_permissions')
-
