@@ -18,13 +18,13 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 
 # 注册路由器
-from rest_framework.routers import Route, SimpleRouter
+from rest_framework.routers import Route, SimpleRouter, DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 from users.views import UserViewset
 from video.views import VideoBanner, VideoView, VideoDetail
 
-router = SimpleRouter()
-router.register('api/user', UserViewset,)  # 只能post创建新用户
+router = DefaultRouter()
+router.register('api/user', UserViewset, )  # 只能post创建新用户
 router.register("api/homerecommend", VideoView)  # 首页推荐List     http://127.0.0.1:8000/api/homerecommend/
 router.register("api/video", VideoDetail)  # 视频详情               http://127.0.0.1:8000/api/video/3
 # http://127.0.0.1:8000/api/video/5/likeaction/
