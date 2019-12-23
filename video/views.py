@@ -32,7 +32,7 @@ class VideoView(ReadOnlyModelViewSet):
 class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
     queryset = Video.objects.all()
     serializer_class = VideoInfoSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     # 在这里返回的serialzers.data字典里面添加上点赞数
     def retrieve(self, request, pk=None, *args, **kwargs):
