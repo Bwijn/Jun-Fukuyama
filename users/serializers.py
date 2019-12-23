@@ -15,6 +15,9 @@ class UserRegSerializer(serializers.ModelSerializer):
     # 注册时默认用户为匿名用户 直接修改序列化文件使账号可用
     is_active = serializers.BooleanField(default=True)
 
+    # 默认头像设置
+    avatar = serializers.CharField(default="http://cdn.wuzhongyin.com/timg.jpg")
+
     # 密码加密保存 重写create方法
     def create(self, validated_data):
         user = super(UserRegSerializer, self).create(validated_data=validated_data)

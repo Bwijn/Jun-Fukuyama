@@ -38,15 +38,15 @@ class CustomBackend(ModelBackend):
             if user.check_password(password):
                 return user
         except Exception as e:
-            print(e.args[0], e)
+            print(e)
             # 异常信息UserProfile matching query does not exist
-            raise serializers.ValidationError({'username_error_field': 'username mismatch'})
+            serializers.ValidationError({'username_error_field': 'username mismatch'})
             return None
 
         else:
             # 上面的还没返回结束的话这里就执行了
             # 这里匹配用户密码错误
-            raise serializers.ValidationError({'password_error_field': "password_Incorrect", "error_code": "0001"})
+            serializers.ValidationError({'password_error_field': "password_Incorrect", "error_code": "0001"})
             # return JsonResponse({"aaa": 1})
             return None
 
