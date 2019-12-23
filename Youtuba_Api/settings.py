@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'Youtuba_Api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
+        'NAME': 'raqo',
+        'USER': 'admin',
+        'PASSWORD': '123456',
+        'HOST': '122.51.25.188:8888',
         'PORT': 5432
     }
 }
@@ -118,6 +118,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+<<<<<<< HEAD
+=======
+STATIC_URL = '/static/'
+STATIC_ROOT = './static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+>>>>>>> d9e383736a830f9b36403ffac414a16fefd8e6af
 
 # 使用自定义User验证类
 AUTH_USER_MODEL = 'users.User'
