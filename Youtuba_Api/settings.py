@@ -4,12 +4,11 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '^3%xy)$_tygx^7w%66vv075#f9p^fk4o_$wdp1jjalrroe1#2s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Application definition
 
@@ -64,9 +63,9 @@ WSGI_APPLICATION = 'Youtuba_Api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'raqo',
-        'USER': 'admin',
-        'PASSWORD': '123456',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': 5432
     }
@@ -103,8 +102,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-
 
 
 # 使用自定义User验证类
@@ -166,13 +163,9 @@ JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
 }
 
-
 ##---------------------------------静态文件
 STATIC_URL = '/static/'
-STATIC_ROOT = './static/' 
+STATIC_ROOT = './static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "/static/"),  # 实际名，即实际文件夹的名字
 ]
-
-
-

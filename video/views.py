@@ -37,7 +37,7 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
     # 在这里返回的serialzers.data字典里面添加上点赞数
     def retrieve(self, request, pk=None, *args, **kwargs):
         # request.user 对象已经被jwt 认证类给赋值了
-
+        print("=========================")
         try:
             # 返回查询到的视频
             instance = Video.objects.get(id=pk)
