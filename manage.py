@@ -3,9 +3,13 @@
 import os
 import sys
 
-
+profile = os.environ.get('随便填','develop')       # 找不到就获得develop
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Youtuba_Api.settings')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Youtuba_Api.%s" % profile)
+
+    # 备份
+    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Youtuba_Api.settings')
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

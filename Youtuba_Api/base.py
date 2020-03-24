@@ -7,8 +7,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '^3%xy)$_tygx^7w%66vv075#f9p^fk4o_$wdp1jjalrroe1#2s'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 # Application definition
 
@@ -58,18 +56,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Youtuba_Api.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': 5432
-    }
-}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -113,14 +100,18 @@ AUTHENTICATION_BACKENDS = (
 
 # 配置 API 框架
 REST_FRAMEWORK = {
+
+    # 指定用于支持coreapi的Schema
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+
     "PAGE_SIZE": 2,  # 每页显示多少个
-    # 认证
+    # 允许 许可 权限
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ),
-    # 验证类
+    # 验证类 认证 token
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # 将request.user赋值为 token解密后的对象 原本默认是匿名用户
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # 将request.user赋值为 token解密后的对象 原本默认是匿名用户
     ),
 
     # 异常处理

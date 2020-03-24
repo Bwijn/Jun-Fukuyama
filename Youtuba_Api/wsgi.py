@@ -11,6 +11,11 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Youtuba_Api.settings')
+profile = os.environ.get('随便填', 'develop')  # 找不到就获得develop
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Youtuba_Api.%s" % profile)
+
+# 备份
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE","tyypeidea.setting.%s" % profile)
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Youtuba_Api.settings')
 
 application = get_wsgi_application()

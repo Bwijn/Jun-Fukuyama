@@ -16,7 +16,7 @@ class UserRegSerializer(serializers.ModelSerializer):
     is_active = serializers.BooleanField(default=True)
 
     # 默认头像设置
-    avatar = serializers.CharField(default="http://cdn.wuzhongyin.com/timg.jpg")
+    # avatar = serializers.CharField(default="http://cdn.wuzhongyin.com/timg.jpg")
 
     # 密码加密保存 重写create方法
     def create(self, validated_data):
