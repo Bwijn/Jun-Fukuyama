@@ -17,7 +17,7 @@ class VideoBannerSerializers(serializers.ModelSerializer):
 class VideoList(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ('id', 'url', 'cover', 'title')
+        fields = ('id', 'url', 'cover', 'title', 'view_count')
 
 
 # 视频详情
@@ -30,4 +30,3 @@ class VideoInfoSerializer(serializers.ModelSerializer):
         model = Video
         depth = 1
         exclude = ('pub_date',)
-

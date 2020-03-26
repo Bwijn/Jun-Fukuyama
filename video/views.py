@@ -28,15 +28,28 @@ class VideoRecommend(ListAPIView):
     serializer_class = VideoList
     pagination_class = PageNumberPagination
 
+    def get_queryset(self, sort):
+        return Video.objects.all().order_by(sort)
+
     def get(self, request, *args, **kwargs):
         category = request.query_params.get('category')
         sort = request.query_params.get('sort')
+
+        # 按时间排序
+        if sort == "time":
+            # todo 数据库添加column 更新时间
+            print(self.queryset)
+            queryset = self.get_queryset('view_count')
+            serializer = VideoList(queryset, many=True)
+            print(self.queryset)
+
+            return Response(serializer.data)
+
         print(category, sort)
         print(request.query_params)
 
-        # 对于更复杂的情况，您可能还想重写视图类中的各种方法。例如。
         # 注意使用`get_queryset()`而不是`self.queryset`
-        queryset = self.get_queryset()
+        queryset = self.get_queryset('-view_count')
         serializer = VideoList(queryset, many=True)
         # print(self.queryset)
         return Response(serializer.data)
