@@ -5,16 +5,16 @@ from rest_framework import viewsets, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler
 from django.http import JsonResponse
 from rest_framework import serializers
 from django.http import HttpResponse, JsonResponse
-from rest_framework.decorators import action
-
-from video.models import Video
+from rest_framework.decorators import action, api_view, authentication_classes
 from .serializers import UserRegSerializer
+from .utils import upload
 
 User = get_user_model()  # 从settings里面去找用户认证模型类 Django.contrib.auth里自带的方法
 
@@ -77,3 +77,23 @@ class UserViewset(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, viewse
 
     def perform_create(self, serializer):
         return serializer.save()
+
+
+# 上传头像接口
+@api_view(['post'])
+# @authentication_classes(IsAuthenticated)
+def avatar_handle(request):
+    # print(request.data)
+
+    ret = upload(file=request.data)  # 返回图片处理结果  {"srcaddr":src}
+
+    ret2 = {'src': ret['srcaddr']}
+
+    print(ret2)
+
+    # 存入对应用户数据库
+    request.user.avatar = ret['srcaddr']
+    request.user.save()
+
+    return JsonResponse(ret2)
+    # return JsonResponse({"src":11})

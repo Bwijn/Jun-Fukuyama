@@ -7,7 +7,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '^3%xy)$_tygx^7w%66vv075#f9p^fk4o_$wdp1jjalrroe1#2s'
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,8 +55,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Youtuba_Api.wsgi.application'
 
-
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -104,14 +101,14 @@ REST_FRAMEWORK = {
     # 指定用于支持coreapi的Schema
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 
-    "PAGE_SIZE": 2,  # 每页显示多少个
+    # "PAGE_SIZE": 2,  # 每页显示多少个
     # 允许 许可 权限
     'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ),
     # 验证类 认证 token
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # 将request.user赋值为 token解密后的对象 原本默认是匿名用户
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # 将request.user赋值为 token解密后的对象 原本默认是匿名用户
     ),
 
     # 异常处理
@@ -154,9 +151,10 @@ JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
 }
 
-##---------------------------------静态文件
+# ---------------------------------静态文件
 STATIC_URL = '/static/'
 STATIC_ROOT = './static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "/static/"),  # 实际名，即实际文件夹的名字
 ]
+

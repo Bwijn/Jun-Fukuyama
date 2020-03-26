@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound, PermissionDenied, NotAuthenticated, ValidationError
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -17,15 +17,30 @@ from rest_framework.response import Response
 from .models import Banner
 
 # 视频表 序列化对象
-from .serializers import VideoBannerSerializers, VideoSerializers, VideoInfoSerializer
+from .serializers import VideoBannerSerializers, VideoList, VideoInfoSerializer
 
 
-# 首页推荐列表
-class VideoView(ReadOnlyModelViewSet):
+#  排序 推荐 (视频列表) 1.首页推荐列表 2. 分类排序页
+class VideoRecommend(ListAPIView):
     permission_classes = []
+    authentication_classes = []
     queryset = Video.objects.all()
-    serializer_class = VideoSerializers
+    serializer_class = VideoList
     pagination_class = PageNumberPagination
+
+    def get(self, request, *args, **kwargs):
+        category = request.query_params.get('category')
+        sort = request.query_params.get('sort')
+        print(category, sort)
+        print(request.query_params)
+
+        # 对于更复杂的情况，您可能还想重写视图类中的各种方法。例如。
+        # 注意使用`get_queryset()`而不是`self.queryset`
+        queryset = self.get_queryset()
+        serializer = VideoList(queryset, many=True)
+        # print(self.queryset)
+        return Response(serializer.data)
+        return self.list(request, *args, **kwargs)
 
 
 # 视频详情 API
@@ -37,7 +52,6 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
     # 在这里返回的serialzers.data字典里面添加上点赞数
     def retrieve(self, request, pk=None, *args, **kwargs):
         # request.user 对象已经被jwt 认证类给赋值了
-        print("=========================")
         try:
             # 返回查询到的视频
             instance = Video.objects.get(id=pk)
@@ -87,3 +101,8 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
 class VideoBanner(ReadOnlyModelViewSet):
     queryset = Banner.objects.all()
     serializer_class = VideoBannerSerializers
+
+# 动漫排序  -热度 -时间
+# class SortAnime(ReadOnlyModelViewSet):
+#     queryset = Video.objects.all()
+#     serializer_class = VideoList

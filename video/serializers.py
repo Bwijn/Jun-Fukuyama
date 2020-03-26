@@ -10,14 +10,14 @@ from video.models import Banner, Video
 class VideoBannerSerializers(serializers.ModelSerializer):
     class Meta:
         model = Banner
-        fields = "__all__"
+        fields = []
 
 
-# 首页推荐
-class VideoSerializers(serializers.ModelSerializer):
+# 排序 推荐 (视频列表)
+class VideoList(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = "__all__"
+        fields = ('id', 'url', 'cover', 'title')
 
 
 # 视频详情
@@ -30,3 +30,4 @@ class VideoInfoSerializer(serializers.ModelSerializer):
         model = Video
         depth = 1
         exclude = ('pub_date',)
+
