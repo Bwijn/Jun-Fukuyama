@@ -13,8 +13,6 @@ from rest_framework_jwt.utils import jwt_decode_handler
 from video.models import Video, Episode
 from rest_framework.response import Response
 
-from .models import Banner
-
 # 视频表 序列化对象
 from .serializers import VideoBannerSerializers, VideoList, VideoInfoSerializer, EpisodeDetails
 
@@ -125,34 +123,3 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
 
         return Response(data={"msg": "action success"}, status=status.HTTP_201_CREATED)
 
-
-# 首页轮播图
-class VideoBanner(ReadOnlyModelViewSet):
-    queryset = Banner.objects.all()
-    serializer_class = VideoBannerSerializers
-
-
-# 剧情介绍 分类 分集页
-class VideoDetailsPage(ListAPIView):
-    queryset = Video.objects
-    serializer_class = EpisodeDetails
-
-    # 返回分集对象
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        obj = Video.objects.get(id=pk)
-        # print(obj)
-        obj = obj.episodes.all()
-        # print(obj)
-
-        # 返回查询出来的Video实例 所对应的episodes的集数
-        return obj
-
-    def get(self, request, *args, **kwargs):
-        #  Episodes对象的查询集
-        queryset = self.get_queryset()  # 注意使用`get_queryset()`而不是`self.queryset`
-
-        serializer = EpisodeDetails(instance=queryset, many=True)
-        # print(serializer)
-
-        return Response(serializer.data)

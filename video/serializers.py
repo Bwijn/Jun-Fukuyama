@@ -6,13 +6,6 @@ from users.serializers import UserSerializer
 from video.models import Banner, Video, Episode, Type
 
 
-# 轮播图
-class VideoBannerSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Banner
-        fields = []
-
-
 # 排序 推荐 (视频列表)
 class VideoList(serializers.ModelSerializer):
     class Meta:

@@ -9,7 +9,8 @@ class User(AbstractUser):
     avatar = models.CharField(verbose_name="URL", help_text="URL", max_length=128, null=True)
 
     like_r = models.ManyToManyField('video.Video', db_table='UserFavoriteVideo', related_name='viewer', blank=True, )
+
     # 暂时重写创建user 管理员与员工身份字段暂无
     # objects = ResetUserManager()
-    # class Meta:
-    #     db_table = "u"
+    class Meta:
+        db_table = "UserTable"
