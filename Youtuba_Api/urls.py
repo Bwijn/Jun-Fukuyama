@@ -21,15 +21,14 @@ from django.urls import path, include, re_path
 from rest_framework.routers import Route, SimpleRouter, DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 from users.views import UserViewset, avatar_handle
-from video.views import VideoBanner, VideoRecommend, VideoDetail
+from video.views import VideoBanner, VideoRecommend, VideoDetail, VideoDetailsPage
 
 from rest_framework.documentation import include_docs_urls
 
 router = DefaultRouter()
 router.register('api/user', UserViewset, )  # 只能post创建新用户
 router.register("api/video", VideoDetail)  # 视频详情               http://127.0.0.1:8000/api/video/3
-# http://127.0.0.1:8000/api/video/5/likeaction/
-
+# router.register("api/details", VideoDetailsPage.as_view())  # # 剧情介绍 分类 分集页
 
 urlpatterns = [
     # 管理员
@@ -54,6 +53,8 @@ urlpatterns = [
     path("api/ranking", VideoRecommend.as_view()),
 
     # 首页推荐List     http://127.0.0.1:8000/api/homerecommend/
-    path("api/homerecommend", VideoRecommend.as_view())
+    path("api/homerecommend", VideoRecommend.as_view()),
+
+    path('api/details/<pk>', VideoDetailsPage.as_view()),
 
 ]

@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound, PermissionDenied, NotAuthenticated, ValidationError
-from rest_framework.generics import ListAPIView, GenericAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -10,14 +10,13 @@ from rest_framework import serializers, fields, status
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
 from rest_framework_jwt.utils import jwt_decode_handler
-
-from video.models import Video
+from video.models import Video, Episode
 from rest_framework.response import Response
 
 from .models import Banner
 
 # 视频表 序列化对象
-from .serializers import VideoBannerSerializers, VideoList, VideoInfoSerializer
+from .serializers import VideoBannerSerializers, VideoList, VideoInfoSerializer, EpisodeDetails
 
 
 #  排序 推荐 (视频列表) 1.首页推荐列表 2. 分类排序页
@@ -56,14 +55,16 @@ class VideoRecommend(ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-# 视频详情 API
+# 视频详情 API  Details Page [分类] [主演] [剧情介绍]
 class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
     queryset = Video.objects.all()
     serializer_class = VideoInfoSerializer
     permission_classes = [IsAuthenticated]
 
     # 在这里返回的serialzers.data字典里面添加上点赞数
+    # 添加type 分类
     def retrieve(self, request, pk=None, *args, **kwargs):
+
         # request.user 对象已经被jwt 认证类给赋值了
         try:
             # 返回查询到的视频
@@ -71,6 +72,21 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
         except Exception as e:
             raise NotFound(detail="video resources notfound")
         serializer = self.get_serializer(instance)
+
+        # 获取 在哪里调用的此接口
+        arg = request.query_params.get('content')
+        if arg == 'details':
+            # print(serializer)
+            print('DATA---------', serializer.data)
+            # dic = serializer.data
+
+            # 把分类封装成字典 {年代:[2010,1011],分类:[xx,xx]}
+
+            instance.type.all()
+
+        # print("分类有：", instance.type.all())
+        # for i in instance.type.all():
+        #     print(i.name)
 
         # 当前用户查询是否点赞
         is_like = instance.viewer.filter(id=request.user.id)
@@ -115,7 +131,28 @@ class VideoBanner(ReadOnlyModelViewSet):
     queryset = Banner.objects.all()
     serializer_class = VideoBannerSerializers
 
-# 动漫排序  -热度 -时间
-# class SortAnime(ReadOnlyModelViewSet):
-#     queryset = Video.objects.all()
-#     serializer_class = VideoList
+
+# 剧情介绍 分类 分集页
+class VideoDetailsPage(ListAPIView):
+    queryset = Video.objects
+    serializer_class = EpisodeDetails
+
+    # 返回分集对象
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        obj = Video.objects.get(id=pk)
+        # print(obj)
+        obj = obj.episodes.all()
+        # print(obj)
+
+        # 返回查询出来的Video实例 所对应的episodes的集数
+        return obj
+
+    def get(self, request, *args, **kwargs):
+        #  Episodes对象的查询集
+        queryset = self.get_queryset()  # 注意使用`get_queryset()`而不是`self.queryset`
+
+        serializer = EpisodeDetails(instance=queryset, many=True)
+        # print(serializer)
+
+        return Response(serializer.data)
