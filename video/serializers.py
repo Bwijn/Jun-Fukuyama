@@ -10,7 +10,7 @@ from video.models import Banner, Video, Episode, Type
 class VideoList(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ('id', 'url', 'cover', 'title', 'view_count')
+        fields = ('id', 'cover', 'title', 'view_count')
 
 
 #  分类 序列化器
@@ -51,11 +51,10 @@ class VideoInfoSerializer(serializers.ModelSerializer):
         depth = 1
         exclude = ['view_count', 'author', 'animename', 'classification', ]
 
-
 # 分集 序列化器
 class EpisodeDetails(serializers.ModelSerializer):
     class Meta:
         model = Episode
         depth = 0
-        fields = ['episode_num', 'url', 'video_obj']
+        fields = ['episode_num', 'video_obj', 'name']
         # fields = '__all__'

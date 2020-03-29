@@ -6,7 +6,7 @@ from django.db import models
 # 视频详情
 class Video(models.Model):
     # 一对多 User 对 Video
-    url = models.CharField(max_length=500, null=True, blank=True)  # 视频地址
+    # url = models.CharField(max_length=500, null=True, blank=True)  # 视频地址
     author = models.ForeignKey(to='users.User', on_delete=models.SET_NULL, null=True, blank=True)  # 作者
     cover = models.CharField(max_length=500, null=True, blank=True)  # 封面
     pub_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)  # 发布日期
@@ -24,8 +24,9 @@ class Video(models.Model):
 
 # 剧集数
 class Episode(models.Model):
-    url = models.CharField(max_length=500, null=True, blank=True)  # 每一集的url
-    episode_num = models.CharField(max_length=500, null=True, )  # 剧集的名字
+    url = models.CharField(max_length=500, verbose_name="剧集链接 暂时弃用", null=True, blank=True)  # 每一集的url 暂时废弃
+    episode_num = models.CharField(max_length=500, null=True, )  # 剧集的集数
+    name = models.CharField(max_length=500)  # 剧集名
     video_obj = models.ForeignKey(to="video.Video", related_name='episodes', on_delete=models.CASCADE)  # 所属的视频
 
     class Meta:
