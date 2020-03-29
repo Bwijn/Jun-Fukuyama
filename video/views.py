@@ -42,19 +42,31 @@ class VideoRecommend(ListAPIView):
 
             return Response(serializer.data)
 
-        print(category, sort)
-        print(request.query_params)
-
-        # 注意使用`get_queryset()`而不是`self.queryset`
-        queryset = self.get_queryset('-view_count')
+        # 按热度排序
+        queryset = self.get_queryset('-view_count')  # 注意使用`get_queryset()`而不是`self.queryset`
         serializer = VideoList(queryset, many=True)
         # print(self.queryset)
+        # print(serializer)
+
         return Response(serializer.data)
         return self.list(request, *args, **kwargs)
 
 
 # 视频详情 API  Details Page [分类] [主演] [剧情介绍]
 class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
+    """
+    {
+        "id": 1,
+        "author": null,
+        "url": "http://127.0.0.1:8080/details/1",
+        "cover": "http://img1.imgtn.bdimg.com/it/u=1775789743,1975475802&fm=26&gp=0.jpg",
+        "brief": "《进击的巨人》（进撃の巨人），是日本漫画家谏山创创作的少年漫画作品，于2009年在讲谈社旗下的漫画杂志《别册少年Magazine》上开始连载。\r\n该作品曾获2011年“这本漫画真厉害！”男性榜第1名、“讲谈社漫画赏少年部门赏”等奖项 。2012年12月正式宣布TV动画化，2013年4月6日，由WIT STUDIO改编的同名电视动画正式开始放送。\r\n截止至2019年12月25日，单行本（含电子版）累计全球发行量突破1亿册。 [1]",
+        "title": "进击的巨人第一季",
+        "view_count": 0,
+        "likenum": 0,
+        "is_liked": 0
+    }
+    """
     queryset = Video.objects.all()
     serializer_class = VideoInfoSerializer
     permission_classes = [IsAuthenticated]
@@ -123,3 +135,41 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
 
         return Response(data={"msg": "action success"}, status=status.HTTP_201_CREATED)
 
+
+# 分集列表
+class Episodes(ListAPIView):
+    """
+        [
+            {
+                "episode_num": "1",
+                "video_obj": 1,
+                "name": "二千年後の君へ"
+            },
+            {
+                "episode_num": "2",
+                "video_obj": 1,
+                "name": "その日"
+            }
+        ]
+    """
+    queryset = Video.objects
+    serializer_class = EpisodeDetails
+
+    # 返回分集对象
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        obj = Video.objects.get(id=pk)
+        # print(obj)
+        obj = obj.episodes.all()
+        # print(obj)
+
+        # 返回查询出来的Video实例 所对应的episodes的集数
+        return obj
+
+    def get(self, request, *args, **kwargs):
+        #  Episodes对象的查询集
+        queryset = self.get_queryset()  # 注意使用`get_queryset()`而不是`self.queryset`
+
+        serializer = EpisodeDetails(instance=queryset, many=True)
+
+        return Response(serializer.data)

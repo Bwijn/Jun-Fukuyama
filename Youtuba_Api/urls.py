@@ -52,9 +52,10 @@ urlpatterns = [
     # 动漫排序 时间 or 热度 ranking?category=anime&sort=hot
     path("api/ranking", VideoRecommend.as_view()),
 
-    # 首页推荐List     http://127.0.0.1:8000/api/homerecommend/
-    path("api/homerecommend", VideoRecommend.as_view()),
+    # 热门推荐
+    path("api/recommend", VideoRecommend.as_view()),
 
-    path('api/details/<pk>', VideoDetailsPage.as_view()),
+    # 剧集
+    path('api/details/<pk>', Episodes.as_view()),
 
 ]
