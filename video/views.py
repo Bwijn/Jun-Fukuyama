@@ -55,6 +55,9 @@ class VideoRecommend(ListAPIView):
 # 视频详情 API  Details Page [分类] [主演] [剧情介绍]
 class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
     """
+    api/video
+    api/video/1?addition=type
+    api/video/1/1 视频播放页
     {
         "id": 1,
         "author": null,
@@ -83,20 +86,13 @@ class VideoDetail(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
             raise NotFound(detail="video resources notfound")
         serializer = self.get_serializer(instance)
 
-        # 获取 在哪里调用的此接口
-        arg = request.query_params.get('content')
-        if arg == 'details':
-            # print(serializer)
-            print('DATA---------', serializer.data)
-            # dic = serializer.data
-
-            # 把分类封装成字典 {年代:[2010,1011],分类:[xx,xx]}
-
-            instance.type.all()
-
-        # print("分类有：", instance.type.all())
-        # for i in instance.type.all():
-        #     print(i.name)
+        # url参数是否查询了分类
+        queryset = request.query_params.get('addition')
+        if queryset == 'type':
+            # 查询改视频分类组装到serializer.data中返回
+            pass
+            # dic['type'] = type.name
+            # return Response(dic, status=status.HTTP_200_OK)
 
         # 当前用户查询是否点赞
         is_like = instance.viewer.filter(id=request.user.id)
@@ -173,3 +169,38 @@ class Episodes(ListAPIView):
         serializer = EpisodeDetails(instance=queryset, many=True)
 
         return Response(serializer.data)
+
+
+class PlayVideoView(RetrieveAPIView):
+    pass
+
+
+class Player(RetrieveAPIView):
+    """
+    {
+        "url": "播放地址(播放器初始化需要)",
+        "cover": "封面地址"
+    }
+    """
+    queryset = Episode.objects
+    serializer_class = EpisodeDetails
+
+    # 返回集对象
+    def get_queryset(self):
+        pk = self.kwargs.get('episode')
+        obj = self.queryset.get(id=pk)
+        print(obj)
+
+        return obj
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_queryset()
+        ret = {
+            'url': instance.url,
+            'cover': 'none'
+        }
+
+        # serializer = self.get_serializer(instance)
+        return Response(ret)
+
+    # def get(self, request, *args, **kwargs):

@@ -58,4 +58,9 @@ urlpatterns = [
     # 剧集
     path('api/details/<pk>', Episodes.as_view()),
 
+    # 播放页
+    path('api/play/video/<videoid>/<episode>', PlayVideoView.as_view()),
+
+    # 初始化播放器
+    path('api/player/<videoid>/<episode>', Player.as_view())
 ]
